@@ -16,8 +16,12 @@
         output.innerHTML += "Server 1: " + e.data + "\n";
         numbers.push(e.data)
         if(numbers.length == 2){
-            let summ = parseInt(numbers[0]) + parseInt(numbers[1])
+            let summ = parseFloat(numbers[0].split(" ")[0]) + parseFloat(numbers[1].split(" ")[0])
             output.innerHTML += "RESULT: " + summ + "\n";
+            output.innerHTML += "Time Computer 1: " + numbers[0].split(" ")[1] + "ms\n";
+            output.innerHTML += "Time Computer 2: " + numbers[1].split(" ")[1] + "ms\n";
+            let delta = parseFloat(numbers[1].split(" ")[1]) - parseFloat(numbers[0].split(" ")[1])
+            output.innerHTML += "Delta: " + delta + "ms\n";
             numbers = []
         }
     };

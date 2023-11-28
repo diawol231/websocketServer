@@ -18,8 +18,9 @@
         };
     
         socket.onmessage = await function (e) {
+            let startTime = new Date().getMilliseconds()
             output.innerHTML += "Server: " + e.data + "\n";
-            let arr = e.data.split("").map(str => parseInt(str));
+            let arr = e.data.split("").map(str => parseFloat(str));
             for (let j = arr.length - 1; j > 0; j--) {
                 for (let i = 0; i < j; i++) {
                     if (arr[i] > arr[i + 1]) {
@@ -29,8 +30,9 @@
                     }
                 }
             }
-            output.innerHTML += "result: " + arr.join("") + "\n";
-            socket.send("result " + arr.join(""))
+            let endTime = new Date().getMilliseconds() - startTime
+            output.innerHTML += "result: " + arr.join("") + " " + endTime +" ms" + "\n";
+            socket.send("result:" + arr.join("") + " " + endTime)
         };
     }
 

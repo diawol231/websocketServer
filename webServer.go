@@ -15,9 +15,9 @@ var upgrader = websocket.Upgrader{
 }
 
 var (
-	clients map[*websocket.Conn]bool
+	clients   map[*websocket.Conn]bool
 	adminConn *websocket.Conn
-	arrayInt [2]int
+	arrayInt  [2]int
 )
 
 func main() {
@@ -25,14 +25,14 @@ func main() {
 	http.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
 		connection, _ := upgrader.Upgrade(w, r, nil) // error ignored for sake of simplicity
 		defer connection.Close()
-		if _, message, _ := connection.ReadMessage(); string(message) == "admin"{
+		if _, message, _ := connection.ReadMessage(); string(message) == "admin" {
 			adminConn = connection
 			fmt.Print("Admin connected!\n")
 		} else {
 			clients[connection] = true
 			fmt.Print("Client connected!\n")
 		}
-		
+
 		defer delete(clients, connection)
 		for {
 			// Read message from browser
@@ -41,14 +41,15 @@ func main() {
 				return
 			}
 
-			msgList := strings.Split(string(msg), " ")
-			if(msgList[0] == "result"){
+			msgList := strings.Split(string(msg), ":")
+			if msgList[0] == "result" {
 				adminConn.WriteMessage(msgType, []byte(msgList[1]))
 				continue
 			}
 			// Print the message to the console
 			// Write message back to browser
 			i := 0
+			msgList = strings.Split(string(msg), " ")
 			for conn := range clients {
 				fmt.Printf("%s sent: %s\n", conn.RemoteAddr(), string(msgList[i]))
 				conn.WriteMessage(msgType, []byte(msgList[i]))
