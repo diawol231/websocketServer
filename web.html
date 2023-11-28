@@ -1,0 +1,29 @@
+<!-- websockets.html -->
+<input id="input_1" type="text" />
+<input id="input_2" type="text" />
+<button onclick="send()">Send</button>
+<pre id="output"></pre>
+<script>
+    var host_1 = "localhost:8081";
+    let numbers = []
+    var socket_1 = new WebSocket("ws://" + host_1 + "/echo");
+    socket_1.onopen = function () {
+        socket_1.send("admin")
+        output.innerHTML += "Status: Connected to Host 1: " + host_1 + "\n";
+    };
+
+    socket_1.onmessage = function (e) {
+        output.innerHTML += "Server 1: " + e.data + "\n";
+        numbers.push(e.data)
+        if(numbers.length == 2){
+            let summ = parseInt(numbers[0]) + parseInt(numbers[1])
+            output.innerHTML += "RESULT: " + summ + "\n";
+            numbers = []
+        }
+    };
+    
+    function send() {
+        socket_1.send(input_1.value + " " + input_2.value);
+    }
+
+</script>

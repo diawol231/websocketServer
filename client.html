@@ -1,0 +1,40 @@
+<input id="input" type="text" />
+<button id="button" onclick="connect()">Send</button>
+<pre id="output"></pre>
+
+<script>
+    var input = document.getElementById("input");
+    var button  = document.getElementById("button");
+    var output = document.getElementById("output");
+    
+    async function connect() {
+        var socket = new WebSocket("ws://" + input.value +"/echo");
+        input.disabled = true;
+        button.disabled = true;
+
+        socket.onopen = await function () {
+            socket.send("client")
+            output.innerHTML += "Status: Connected\n";
+        };
+    
+        socket.onmessage = await function (e) {
+            output.innerHTML += "Server: " + e.data + "\n";
+            let arr = e.data.split("").map(str => parseInt(str));
+            for (let j = arr.length - 1; j > 0; j--) {
+                for (let i = 0; i < j; i++) {
+                    if (arr[i] > arr[i + 1]) {
+                        let temp = arr[i];
+                        arr[i] = arr[i + 1];
+                        arr[i + 1] = temp;
+                    }
+                }
+            }
+            output.innerHTML += "result: " + arr.join("") + "\n";
+            socket.send("result " + arr.join(""))
+        };
+    }
+
+    function send() {
+        socket.send(input.value);
+    }
+</script>
